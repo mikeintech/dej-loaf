@@ -25,7 +25,7 @@
   // her position in each picture, so every layer lines up on her
   // the 15 painted titles cut from the back cover: [cx, cy, w, h] as a fraction of the artwork
   const TT = [[0.1355, 0.8635, 0.141, 0.062], [0.1652, 0.7755, 0.1835, 0.12], [0.186, 0.6708, 0.18, 0.0845], [0.2228, 0.5688, 0.2195, 0.0765], [0.2325, 0.4822, 0.194, 0.0825], [0.2782, 0.3738, 0.1755, 0.1025], [0.348, 0.2502, 0.193, 0.1195], [0.511, 0.1548, 0.12, 0.0495], [0.654, 0.2265, 0.148, 0.062], [0.7415, 0.3208, 0.206, 0.0975], [0.7448, 0.42, 0.1425, 0.086], [0.7735, 0.5055, 0.185, 0.049], [0.792, 0.5942, 0.163, 0.0885], [0.819, 0.688, 0.152, 0.076], [0.835, 0.7952, 0.165, 0.0835]];
-  const titleImg = (i, w) => `<img class="ttl" src="img/titles/${i + 1}.webp" alt="${i + 1}. ${T[i][0]}" width="${Math.round(TT[i][2] * 2000 * w)}" draggable="false">`;
+  const titleImg = (i, w) => `<img class="ttl" src="img/titles/${i + 1}.webp?v=2" alt="${i + 1}. ${T[i][0]}" width="${Math.round(TT[i][2] * 2000 * w)}" draggable="false">`;
   const COVER_A = [850, 850], CROWD_A = [995, 370], ART_A = [850 - 524, 850 - 606];   // her cutout sits at (524,606) on the cover
   const COVER_TO_CROWD = 617 / 245, CROWD_SPAN = 110;   // the crowd covers a few blocks of her neighborhood
 
@@ -117,7 +117,7 @@
   const orbit = $('#orbit'), o3d = $('#o3d'), modeBtn = $('#orbitMode');
   const cards = T.map((t, i) => {
     const b = document.createElement('button'); b.className = 'otitle'; b.setAttribute('aria-label', 'Play ' + t[0]);
-    b.innerHTML = `<img src="img/titles/${i + 1}.webp" alt="${i + 1}. ${t[0]}" draggable="false">`;
+    b.innerHTML = `<img src="img/titles/${i + 1}.webp?v=2" alt="${i + 1}. ${t[0]}" draggable="false">`;
     b.onclick = () => { if (!car.moved) play(i); }; o3d.appendChild(b); return b;
   });
   const car = { a: 0, v: 0, drag: false, moved: false, x: 0, mode: 0, mix: 0, bs: 0 };
