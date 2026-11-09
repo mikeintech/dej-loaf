@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=47">
+<link rel="stylesheet" href="style.css?v=49">
 </head>
 <body>
 <header class="top">
@@ -21,8 +21,8 @@
 <!-- the whole trip: cover → crowd → Detroit → back down -->
 <section id="trip">
   <div class="stage">
-    <div class="herobg" id="bgFront" style="background-image:url(img/cover.jpg)"></div>
-    <div class="herobg" id="bgBack" style="background-image:url(img/back-clean.jpg)"></div>
+    <div class="herobg" id="bgFront" style="background-image:url(img/bg-front.jpg)"></div>
+    <div class="herobg" id="bgBack" style="background-image:url(img/bg-back.jpg)"></div>
     <div class="win" id="win">
     <div class="layer map-world" id="world">
       <div class="ground"></div>
@@ -31,13 +31,15 @@
       <div class="stops" id="stops"></div>
       <div class="fans" id="fans"></div>
       <span class="pin" id="pin"><i></i><b></b></span>
-      <div class="city" id="city" aria-hidden="true">DETROIT</div>
+      <canvas class="city" id="city" aria-hidden="true"></canvas>
     </div>
     <img class="layer crowd" id="crowd" src="img/crowd-soft.webp" alt="">
     <img class="layer cover" id="cover" src="img/cover-soft.webp" alt="Out of Sight, Out of Mind cover: DeJ Loaf looking up from inside a crowd">
     <div class="layer front" id="coverFull" aria-hidden="true"><div class="ftilt" id="ftilt">
       <img class="f-base" id="fBase" src="img/front/base.jpg" alt="">
+      <img class="f-base f-blur" id="fBaseB" src="img/front/base-blur.jpg" alt="">
       <img class="f-ring" id="fRing" src="img/front/ring.webp" alt="">
+      <img class="f-ring f-blur" id="fRingB" src="img/front/ring-blur.webp" alt="">
       <img class="f-her" id="fHer" src="img/front/her.webp" alt="">
       <img class="f-title" id="fTitle" src="img/front/title.webp" alt="">
       <img class="f-sig" id="fSig" src="img/front/sig.webp" alt="">
@@ -107,6 +109,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="chalk.js?v=2"></script>
-<script src="app.js?v=45"></script>
+<script src="app.js?v=48"></script>
 </body>
 </html>

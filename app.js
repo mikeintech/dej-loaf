@@ -72,8 +72,10 @@
   const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let alive = false;
   const glow = $('#glow'), dust = $('#dust'), backShine = $('#backShine'), dctx = dust.getContext('2d');
-  const motes = Array.from({ length: 70 }, () => ({ x: Math.random(), y: Math.random(), r: .6 + Math.random() * 1.8, v: .004 + Math.random() * .012, ph: Math.random() * 6.3, c: ['255,190,150', '150,215,215', '230,120,110', '200,190,230'][Math.random() * 4 | 0] }));
-  const fBase = $('#fBase'), fRing = $('#fRing'), fHer = $('#fHer'), fTitle = $('#fTitle'), fSig = $('#fSig'), ftilt = $('#ftilt');
+  // floating specks cut from the paint sheet (img/specks.png), drawn about as small as the old dots
+  const SPECK = [[0, 0, 48, 23], [48, 0, 48, 31], [96, 0, 46, 47], [144, 0, 48, 34], [192, 0, 48, 43], [240, 0, 48, 42], [288, 0, 48, 43], [336, 0, 37, 48], [0, 48, 48, 45], [48, 48, 48, 29], [96, 48, 48, 35], [144, 48, 48, 22], [192, 48, 40, 48], [240, 48, 48, 44], [288, 48, 42, 48], [336, 48, 48, 45], [0, 96, 44, 48], [48, 96, 38, 48], [96, 96, 48, 42], [144, 96, 48, 33], [192, 96, 48, 27], [240, 96, 48, 45], [288, 96, 48, 26], [336, 96, 33, 48], [0, 144, 48, 42], [48, 144, 48, 27], [96, 144, 48, 37], [144, 144, 36, 48], [192, 144, 48, 25], [240, 144, 48, 36], [288, 144, 28, 48], [336, 144, 34, 48], [0, 192, 48, 39], [48, 192, 48, 46], [96, 192, 48, 31], [144, 192, 37, 48], [192, 192, 48, 39], [240, 192, 48, 20], [288, 192, 46, 48], [336, 192, 40, 48]], speckImg = new Image(); speckImg.src = 'img/specks.png?v=2';
+  const motes = Array.from({ length: 70 }, () => ({ x: Math.random(), y: Math.random(), r: .6 + Math.random() * 1.8, v: .004 + Math.random() * .012, ph: Math.random() * 6.3, s: Math.random() * SPECK.length | 0, rot: Math.random() * 6.3, spin: (Math.random() - .5) * .6 }));
+  const fBaseB = $('#fBaseB'), fRingB = $('#fRingB'), fBase = $('#fBase'), fRing = $('#fRing'), fHer = $('#fHer'), fTitle = $('#fTitle'), fSig = $('#fSig'), ftilt = $('#ftilt');
   const PV = [851, 875];                                   // her centre on the cover: the crowd turns around this
   const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
   addEventListener('pointermove', e => { mouse.tx = e.clientX / innerWidth - .5; mouse.ty = e.clientY / innerHeight - .5; });
@@ -83,11 +85,11 @@
     const now = performance.now() / 1000, dt = Math.min(.1, now - clock.t); clock.t = now;
     const sg = surge(t); clock.front += dt * (1 + 7 * sg); const ph = clock.front;
     const sw = Math.sin(ph * .22), sw2 = Math.sin(ph * .31 + 1.3), br = .5 + .5 * Math.sin(t * .9);
-    const bl = a * sg > .05 ? `blur(${(a * sg * 3).toFixed(2)}px)` : '';
-    fBase.style.filter = bl; fRing.style.filter = bl;
+    const bo = (a * sg).toFixed(3);
     // outer crowd and inner crowd turn opposite ways around her, like a crowd moving around someone standing still
-    fBase.style.transform = rot(PV[0], PV[1], a * (5 * sw + 1.5 * sw2), 1 + a * .16);
-    fRing.style.transform = rot(PV[0] - 55, PV[1] - 79, -a * (8 * sw + 2.5 * Math.sin(ph * .47)), 1 + a * (.05 + .02 * br));
+    fBase.style.transform = fBaseB.style.transform = rot(PV[0], PV[1], a * (5 * sw + 1.5 * sw2), 1 + a * .16);
+    if (fBaseB._o !== bo) { fBaseB.style.opacity = fRingB.style.opacity = fBaseB._o = bo; }
+    fRing.style.transform = fRingB.style.transform = rot(PV[0] - 55, PV[1] - 79, -a * (8 * sw + 2.5 * Math.sin(ph * .47)), 1 + a * (.05 + .02 * br));
     fHer.style.transform = rot(PV[0] - 524, PV[1] - 606, a * .6 * sw2, 1 + a * (.035 * br), 0, -a * 10 * br);
     fTitle.style.transform = `translate3d(${(a * 10 * Math.sin(t * .4)).toFixed(1)}px,${(a * 12 * Math.sin(t * .53)).toFixed(1)}px,${(a * 160).toFixed(0)}px) rotate(${(a * 2 * Math.sin(t * .35)).toFixed(2)}deg)`;
     fSig.style.transform = `translate3d(${(a * -8 * Math.sin(t * .45)).toFixed(1)}px,${(a * 10 * Math.sin(t * .6)).toFixed(1)}px,${(a * 120).toFixed(0)}px)`;
@@ -101,13 +103,16 @@
     if (show(backShine, a1 * backO * .35)) { const k = (t * .07) % 1; backShine.style.webkitMaskPosition = backShine.style.maskPosition = `${(150 - k * 200).toFixed(1)}% 0`; }
     const dpr = Math.min(2, devicePixelRatio || 1);
     if (dust.width !== Math.round(vw * dpr)) { dust.width = Math.round(vw * dpr); dust.height = Math.round(vh * dpr); }
-    dctx.setTransform(dpr, 0, 0, dpr, 0, 0); dctx.clearRect(0, 0, vw, vh);
+    dctx.globalAlpha = 1; dctx.setTransform(dpr, 0, 0, dpr, 0, 0); dctx.clearRect(0, 0, vw, vh);
     if (a <= .004) return;
     const S = Math.min(vw * .86, vh * .74, 640), x0 = (vw - S) / 2, y0 = (vh - S) / 2;
     for (const d of motes) {
       const y = ((d.y - t * d.v) % 1 + 1) % 1, x = d.x + .02 * Math.sin(t * .6 + d.ph);
-      dctx.fillStyle = `rgba(${d.c},${(a * (.25 + .45 * (.5 + .5 * Math.sin(t * 1.3 + d.ph)))).toFixed(3)})`;
-      dctx.beginPath(); dctx.arc(x0 + x * S, y0 + y * S, d.r, 0, 6.283); dctx.fill();
+      if (!speckImg.complete) continue;
+      const q = SPECK[d.s], sz = d.r * 3.2, k = sz / Math.max(q[2], q[3]);
+      dctx.globalAlpha = a * (.45 + .55 * (.5 + .5 * Math.sin(t * 1.3 + d.ph)));
+      dctx.setTransform(dpr, 0, 0, dpr, 0, 0); dctx.translate(x0 + x * S, y0 + y * S); dctx.rotate(d.rot + t * d.spin);
+      dctx.drawImage(speckImg, q[0], q[1], q[2], q[3], -q[2] * k / 2, -q[3] * k / 2, q[2] * k, q[3] * k);
     }
   }
 
@@ -154,7 +159,7 @@
       const x = hx + (sx - hx) * m, y = hy + (sy - hy) * m, z = hz + (sz - hz) * m, s = 1 + (ss - 1) * m, d = hd + (sd - hd) * m;
       c.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,${z.toFixed(1)}px) translate(-50%,-50%) scale(${s.toFixed(3)})`;
       c.style.opacity = Math.max(.25, Math.min(1, .35 + .65 * d)).toFixed(2);
-      c.firstChild.style.filter = sg > .05 ? `blur(${(sg * 3.5).toFixed(2)}px)` : '';
+      const fb = sg > .05 ? `blur(${(sg * 3.5).toFixed(1)}px)` : ''; if (c._fb !== fb) { c.firstChild.style.filter = c._fb = fb; }
     });
   }
 
@@ -329,6 +334,30 @@
     pitem.className = 'pitem ' + (b.dataset.s === 'spin' ? '' : 'show-' + b.dataset.s);
   });
 
+  // bake glows once so the moving 3D map never repaints CSS filters or text-shadows
+  function bakeLabel(img, color) {
+    const go = () => {
+      const pad = 40, w = img.naturalWidth, h = img.naturalHeight, c = document.createElement('canvas');
+      c.width = w + pad * 2; c.height = h + pad * 2; c.className = 'ttl baked';
+      c.style.width = (img.width + pad * 2 * img.width / w) + 'px'; c.style.margin = (-pad * img.width / w) + 'px auto';
+      const x = c.getContext('2d');
+      x.shadowColor = color; x.shadowBlur = 22; x.drawImage(img, pad, pad);
+      x.shadowColor = 'rgba(8,5,5,.95)'; x.shadowBlur = 3; for (let k = 0; k < 3; k++) x.drawImage(img, pad, pad);
+      x.shadowColor = 'transparent'; x.globalCompositeOperation = 'lighter'; x.globalAlpha = .35; x.drawImage(img, pad, pad);
+      c.setAttribute('role', 'img'); c.setAttribute('aria-label', img.alt); img.replaceWith(c);
+    };
+    img.complete && img.naturalWidth ? go() : img.addEventListener('load', go, { once: true });
+  }
+  document.querySelectorAll('.stop').forEach((b, i) => bakeLabel(b.querySelector('.ttl'), COL[i]));
+  (async () => {
+    try { await document.fonts.load("600 330px 'Space Grotesk'"); } catch (e) {}
+    const c = $('#city'), x = c.getContext('2d'), F = "600 330px 'Space Grotesk', sans-serif", txt = 'DETROIT', sp = 105;
+    x.font = F; const w = [...txt].reduce((a, ch) => a + x.measureText(ch).width + sp, 0) + 600;
+    c.width = Math.ceil(w); c.height = 900; c.style.width = c.width + 'px'; c.style.height = c.height + 'px';
+    x.font = F; x.textBaseline = 'middle'; x.fillStyle = '#ffe3d2';
+    const draw = (blur, col) => { x.shadowBlur = blur; x.shadowColor = col; let px = 300; for (const ch of txt) { x.fillText(ch, px, 450); px += x.measureText(ch).width + sp; } };
+    draw(260, 'rgba(230,70,60,.45)'); draw(140, 'rgba(230,70,60,.6)'); draw(60, 'rgba(255,120,90,.75)'); draw(18, 'rgba(255,190,160,.9)');
+  })();
   measure(); sizeCards(); render();
 
   // ---------- fan pins (kept on this device) ----------
