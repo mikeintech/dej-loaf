@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Out of Sight, Out of Mind · DeJ Loaf</title>
+<meta name="description" content="DeJ Loaf, Out of Sight, Out of Mind. Rise out of the crowd and over Detroit, one song at a time.">
+<link rel="icon" type="image/png" href="img/favicon.png?v=2">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=46">
+</head>
+<body>
+<header class="top">
+  <a class="home" id="home" href="./" aria-label="DeJ Loaf, back to the start"><img class="name sig" src="img/front/sig.webp" alt="DeJ Loaf"></a>
+  <img class="album ttlimg" src="img/front/title.webp" alt="Out of Sight, Out of Mind">
+  <a class="stream" href="https://music.apple.com/us/album/6831678060" target="_blank" rel="noopener">Stream</a>
+</header>
+
+<!-- the whole trip: cover → crowd → Detroit → back down -->
+<section id="trip">
+  <div class="stage">
+    <div class="herobg" id="bgFront" style="background-image:url(img/cover.jpg)"></div>
+    <div class="herobg" id="bgBack" style="background-image:url(img/back-clean.jpg)"></div>
+    <div class="win" id="win">
+    <div class="layer map-world" id="world">
+      <div class="ground"></div>
+      <img src="img/detroit.jpg" alt="" class="map">
+      <svg class="routes" viewBox="0 0 3000 2455" aria-hidden="true"><defs><pattern id="chalkPat" patternUnits="userSpaceOnUse" width="128" height="128"><image href="img/chalk-tile.png" width="128" height="128"/></pattern></defs><path id="routeGlow" d=""/><path id="route" d=""/></svg>
+      <div class="stops" id="stops"></div>
+      <div class="fans" id="fans"></div>
+      <span class="pin" id="pin"><i></i><b></b></span>
+      <div class="city" id="city" aria-hidden="true">DETROIT</div>
+    </div>
+    <img class="layer crowd" id="crowd" src="img/crowd-soft.webp" alt="">
+    <img class="layer cover" id="cover" src="img/cover-soft.webp" alt="Out of Sight, Out of Mind cover: DeJ Loaf looking up from inside a crowd">
+    <div class="layer front" id="coverFull" aria-hidden="true"><div class="ftilt" id="ftilt">
+      <img class="f-base" id="fBase" src="img/front/base.jpg" alt="">
+      <img class="f-ring" id="fRing" src="img/front/ring.webp" alt="">
+      <img class="f-her" id="fHer" src="img/front/her.webp" alt="">
+      <img class="f-title" id="fTitle" src="img/front/title.webp" alt="">
+      <img class="f-sig" id="fSig" src="img/front/sig.webp" alt="">
+    </div></div>
+    <img class="layer artist" id="artist" src="img/front/her.webp" alt="">
+    <img class="back" id="back" src="img/back-clean.jpg" alt="Back cover: DeJ Loaf in a white coat with the handwritten tracklist">
+    <div class="orbit" id="orbit"><div class="o3d" id="o3d"><img class="ofig" src="img/back-figure.webp" alt=""></div></div>
+    <img class="back shine" id="backShine" src="img/back-clean.jpg" alt="">
+    <div class="glow" id="glow"></div>
+    <canvas class="dust" id="dust"></canvas>
+    <div class="fog" id="fog"></div>
+    <div class="vignette"></div>
+    </div>
+
+    <div class="hud">
+      <p class="cap c1">Scroll to rise out of the crowd</p>
+      <p class="cap c2"><img class="ttlimg" src="img/front/title.webp" alt="Out of Sight, Out of Mind"><span>From the crowd to the whole city.</span></p>
+      <div class="now" id="now"><small id="nowN">01</small><b id="nowT">Too Deep</b><button id="nowPlay">▶ Play preview</button></div>
+      <div class="fanbox" id="fanbox">
+        <b class="chalk" data-fit="1" data-size="46" data-text="Where are you listening from?"></b>
+        <span>Tap the map to drop your pin.</span>
+        <button id="clearFans" hidden>Remove my pin</button>
+      </div>
+      <p class="cap c3"><img class="ttlimg" src="img/front/title.webp" alt="Out of Sight, Out of Mind"><span>Back down to her.</span></p>
+      <button class="omode" id="orbitMode">Spiral</button>
+      <div class="prog"><i id="progbar"></i></div>
+    </div>
+  </div>
+</section>
+
+<section class="list" id="tracks">
+  <h2 class="chalk" data-fit="1" data-size="96" data-text="15 songs"></h2>
+  <ol id="tracklist"></ol>
+  <div class="links">
+    <a class="btn" href="https://music.apple.com/us/album/6831678060" target="_blank" rel="noopener">Apple Music</a>
+  </div>
+  <div class="merch" id="merch">
+    <img class="merch-mark" src="img/front/title.webp" alt="Out of Sight, Out of Mind">
+    <h3>Merch</h3>
+    <div class="mgrid mcream" id="mCream"></div>
+    <div class="mgrid mblack" id="mBlack"></div>
+    <p class="mnote">Concept pieces · tap one to look closer</p>
+  </div>
+  <footer>Unofficial concept · Web experience by <a href="https://yupefer.com" target="_blank" rel="noopener">Yupefer</a> · song previews via Apple Music</footer>
+</section>
+
+<div class="player" id="player">
+  <button class="pp" id="pp" aria-label="Play"><i></i></button>
+  <div class="pmeta"><div id="pt"><img class="ttl" src="img/titles/1.webp" alt="1. Too Deep"></div><small><span id="pn">01</span> / 15 · 30s preview</small><div class="bar"><i id="pbar"></i></div></div>
+  <button class="nx" id="nx" aria-label="Next song">›</button>
+</div>
+<div class="prod" id="prod" hidden aria-modal="true" role="dialog" aria-labelledby="prodName">
+  <button class="pclose" id="pclose" aria-label="Close">×</button>
+  <button class="pnav pprev" id="pprev" aria-label="Previous piece">‹</button>
+  <button class="pnav pnext" id="pnext" aria-label="Next piece">›</button>
+  <div class="pstage"><div class="pfloat"><div class="pitem" id="pitem"><img class="pf" alt=""><img class="pb" alt=""></div></div><div class="pshadow"></div></div>
+  <div class="pinfo">
+    <small>DeJ Loaf · Out of Sight, Out of Mind</small>
+    <h4 id="prodName"></h4>
+    <p id="prodDesc"></p>
+    <div class="psizes" id="psizes"></div>
+    <div class="pthumbs"><button data-s="front">Front</button><button data-s="back">Back</button><button data-s="spin" class="on">Turn</button></div>
+    <span class="pconcept">Concept piece · not for sale</span>
+  </div>
+</div>
+<audio id="aud" preload="none"></audio>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="chalk.js?v=2"></script>
+<script src="app.js?v=44"></script>
+</body>
+</html>
