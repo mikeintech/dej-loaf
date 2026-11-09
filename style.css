@@ -266,8 +266,8 @@ button{font:inherit;cursor:pointer}
 .pstage{position:relative;height:min(78vh,720px);perspective:1400px;display:grid;place-items:center}
 .pfloat{width:min(100%,62vh);aspect-ratio:1;animation:pbob 4.5s ease-in-out infinite;transform-style:preserve-3d}
 .pitem{position:relative;width:100%;height:100%;transform-style:preserve-3d;animation:pturn 11s cubic-bezier(.5,0,.3,1) infinite}
-.pitem.enter{animation:penter .9s cubic-bezier(.2,.9,.25,1) both,pturn 11s cubic-bezier(.5,0,.3,1) .9s infinite}
-.prod.single .pitem{animation-name:psway}.prod.single .pitem.enter{animation:penter .9s cubic-bezier(.2,.9,.25,1) both,psway 6s ease-in-out .9s infinite}
+.pitem.enter{animation:penter .9s cubic-bezier(.2,.9,.25,1) backwards,pturn 11s cubic-bezier(.5,0,.3,1) .9s infinite}
+.prod.single .pitem{animation-name:psway}.prod.single .pitem.enter{animation:penter .9s cubic-bezier(.2,.9,.25,1) backwards,psway 6s ease-in-out .9s infinite}
 .pitem.show-front{animation:none;transform:rotateY(0)}.pitem.show-back{animation:none;transform:rotateY(180deg)}
 .pitem img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;backface-visibility:hidden;-webkit-backface-visibility:hidden;filter:drop-shadow(0 30px 40px rgba(0,0,0,.6))}
 .pitem .pb{transform:rotateY(180deg)}
@@ -316,3 +316,14 @@ button{font:inherit;cursor:pointer}
 .herobg,.fog,#dust{will-change:opacity}
 .stop span .ttl.baked,.stop.on span .ttl.baked{filter:none;display:block}
 .city{text-shadow:none;font:inherit;letter-spacing:0;padding:0;color:transparent}
+
+
+/* merch flip: each face gets its own 3D layer, and no filter on the faces (filters break backface hiding in Chrome) */
+.mflip img{filter:none}
+.mflip .mf{transform:rotateY(0deg) translateZ(1px)}
+.mflip .mb{transform:rotateY(180deg) translateZ(1px)}
+.mflip::after{content:"";position:absolute;left:18%;right:18%;bottom:4%;height:8%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.55),transparent);transform:translateZ(-2px);pointer-events:none}
+/* song list: the hover hugs the title instead of a full-width square */
+.list li{display:flex}
+.list li button{width:auto;display:inline-flex;padding:6px 16px;border-radius:999px}
+.mcard:hover .mflip{filter:none}

@@ -144,7 +144,7 @@
   let clock = { t: performance.now() / 1000, front: 0 };
   function spin() {
     const sg = surge(performance.now() / 1000);
-    if (!car.drag) { car.v *= .94; car.a += car.v + (Math.abs(car.v) < .25 ? (car.mode ? .1 : .05) * (1 + 9 * sg) : 0); }
+    if (!car.drag && !cards.some(c => c.matches(':hover'))) { car.v *= .94; car.a += car.v + (Math.abs(car.v) < .25 ? (car.mode ? .1 : .05) * (1 + 9 * sg) : 0); }
     if (!car.pick) { const lap = Math.floor(car.a / (30 * LOOP)); const md = ((lap % 2) + 2) % 2; if (md !== car.mode) { car.mode = md; modeBtn.textContent = md ? 'Halo' : 'Spiral'; } }
     car.mix += (car.mode - car.mix) * .04;
     for (const k of ['left', 'top', 'width', 'height', 'transform']) orbit.style[k] = back.style[k];
@@ -164,7 +164,10 @@
   }
 
   // ---- left alone (or hovered) on the album, it flips over and keeps turning between front and back
+  const NOENDFLIP = /noendflip/.test(location.search), REELFAST = /reelfast/.test(location.search);   // recording-only switches   // for screen recordings: keep the back cover still at the end
   const flip = { face: -1, anim: false, t0: 0, swapped: false, last: performance.now(), hover: 0, next: 0, on: false };
+  orbit.addEventListener('pointerdown', () => { flip.holdUntil = performance.now() + 6000; });
+  modeBtn.addEventListener('pointerdown', () => { flip.holdUntil = performance.now() + 6000; });
   const poke = () => { flip.last = performance.now(); };
   addEventListener('scroll', () => { poke(); flip.face = -1; flip.anim = false; flip.hover = 0; }, { passive: true });
   ['keydown', 'touchstart', 'wheel'].forEach(ev => addEventListener(ev, poke, { passive: true }));
@@ -181,15 +184,18 @@
     const now = performance.now();
     // at the end it shows the back for a moment, then starts flipping on its own; at the start it waits for you to sit still
     if (nat === 1 && !flip.endAt) flip.endAt = now;
+    if (NOENDFLIP && nat === 1 && flip.face === 1 && !flip.anim) { flip.on = false; win.style.transform = ''; return p; }
     if (nat === 0) flip.endAt = 0;
-    const ready = (nat === 1 && now - flip.endAt > 1200) || now - flip.last > 4000 || (flip.hover && now - flip.hover > 2500);
-    if (!flip.anim && ready && now > flip.next) { flip.anim = true; flip.t0 = now; flip.swapped = false; }
+    const HOV = REELFAST ? 350 : 2500;
+    const ready = (nat === 1 && !NOENDFLIP && now - flip.endAt > 1200) || now - flip.last > 4000 || (flip.hover && now - flip.hover > HOV);
+    const holdBack = flip.face === 1 && (now < (flip.holdUntil || 0) || orbit.matches(':hover') || modeBtn.matches(':hover') || /holdback/.test(location.search));
+    if (!flip.anim && ready && !holdBack && now > flip.next) { flip.anim = true; flip.t0 = now; flip.swapped = false; }
     let ang = 0;
     if (flip.anim) {
       const k = Math.min(1, (now - flip.t0) / 1200), e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
       if (k >= .5 && !flip.swapped) { flip.face = 1 - flip.face; flip.swapped = true; }
       ang = e < .5 ? e * 180 : e * 180 - 180;                // edge-on at the halfway point, then the other side turns in
-      if (k >= 1) { flip.anim = false; flip.next = now + 4500; ang = 0; }
+      if (k >= 1) { flip.anim = false; flip.next = now + (REELFAST ? 5600 : 4500); ang = 0; }
     }
     flip.on = ready || flip.anim || flip.face !== nat;
     win.style.transform = ang ? `perspective(1600px) rotateY(${ang.toFixed(2)}deg)` : '';
